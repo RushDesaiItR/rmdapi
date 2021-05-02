@@ -100,7 +100,7 @@ app.get("/doctors", cors(), (req, res) => {
 
 })
 app.get("/slambook", cors(), (req, res) => {
-    Doctors.find()
+    Slambook.find()
         .then((data) => {
 
             res.send(data)
