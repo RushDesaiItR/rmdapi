@@ -99,6 +99,17 @@ app.get("/doctors", cors(), (req, res) => {
         })
 
 })
+app.get("/slambook", cors(), (req, res) => {
+    Doctors.find()
+        .then((data) => {
+
+            res.send(data)
+        })
+        .catch((err) => {
+            res.send(err)
+        })
+
+})
 app.get("/doctor-login", async (req, res) => {
     const loginDoctors = await Doctors.find({ $or: [{ email: req.body.email, password: req.body.password }] })
 
@@ -381,7 +392,7 @@ app.get("/",(req,res)=>{
 
 
 app.post("/slambook", async (req, res) => {
-    console.log("request come")
+   
  try {
 
      const slamBook = new SlamBook({
@@ -405,7 +416,7 @@ app.post("/slambook", async (req, res) => {
          .then(data => {
 
              res.json({
-                 message: "Room Booked"
+                 message: "Done"
              })
          })
          .catch(error => {
