@@ -4,6 +4,9 @@ require('dotenv').config()
 //git add .
 //git push origin master
 //git push heroku HEAD:master
+//https://shrouded-scrubland-67974.herokuapp.com/
+//emulator -avd @name-of-your-emulator
+//emulator -list-avds
 const Patients = require('./models/Patients')
 const Doctors = require('./models/Doctors')
 const DoctorsOppintment = require("./models/DoctorsOppintment")
