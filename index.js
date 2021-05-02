@@ -100,14 +100,12 @@ app.get("/doctors", cors(), (req, res) => {
 
 })
 app.get("/slambook", cors(), (req, res) => {
-    Slambook.find()
-        .then((data) => {
-
-            res.send(data)
-        })
-        .catch((err) => {
-            res.send(err)
-        })
+    Slambook.find({})
+       .then(data=>{
+           res.send(data)
+       }).catch(error=>{
+           res.send(error)
+       })
 
 })
 app.get("/doctor-login", async (req, res) => {
