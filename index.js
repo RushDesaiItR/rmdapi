@@ -124,7 +124,7 @@ app.get("/doctor-login", async (req, res) => {
     }
 })
 
-app.get("/slambookid", async (req, res) => {
+app.get("/slambookid/:id", async (req, res) => {
     SlamBook.findById(req.params.id)
     .then(data=>{
       res.send(data)
