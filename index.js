@@ -123,6 +123,20 @@ app.get("/doctor-login", async (req, res) => {
         })
     }
 })
+
+app.get("/slambookid", async (req, res) => {
+    SlamBook.find({ _id:req.body.id })
+    .then(data=>{
+      res.send(data)
+    })
+    .catch(error=>{
+        res.send(error)
+    })
+
+
+  
+    
+})
 app.post("/doctor", async (req, res) => {
     if (await Doctors.findOne({ email: req.body.email })) {
         return res.json({ error: "Email Already Exists" })
