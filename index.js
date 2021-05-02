@@ -99,13 +99,15 @@ app.get("/doctors", cors(), (req, res) => {
         })
 
 })
-app.get("/slambook", cors(), (req, res) => {
-    Slambook.find({})
-       .then(data=>{
-           res.send(data)
-       }).catch(error=>{
-           res.send(error)
-       })
+app.get("/getslambook", cors(), (req, res) => {
+      SlamBook.find()
+        .then((data) => {
+
+            res.send(data)
+        })
+        .catch((err) => {
+            res.send(err)
+        })
 
 })
 app.get("/doctor-login", async (req, res) => {
