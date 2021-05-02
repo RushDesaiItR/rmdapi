@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require("mongoose")
 require('dotenv').config()
+//git add .
+//git push origin master
+//git push heroku HEAD:master
 const Patients = require('./models/Patients')
 const Doctors = require('./models/Doctors')
 const DoctorsOppintment = require("./models/DoctorsOppintment")
@@ -369,7 +372,7 @@ app.post("/book", async (req, res) => {
 })
 
 app.get("/",(req,res)=>{
-   res.send("rrrrr")
+   res.send("Welcome")
 })
 
 
