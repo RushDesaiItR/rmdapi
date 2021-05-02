@@ -92,7 +92,7 @@ app.get("/doctors", cors(), (req, res) => {
     Doctors.find()
         .then((data) => {
 
-            res.json(data)
+            res.send(data)
         })
         .catch((err) => {
             res.send(err)
