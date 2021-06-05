@@ -47,5 +47,8 @@ const Book = new mongoose.Schema({
         require:true,
         trim:true,
     },    
+    event:{
+        type:String,
+    }
 },{ timestamps: true })
 module.exports=mongoose.model("Book",Book)

@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require("mongoose")
 require('dotenv').config()
+var ObjectId = require('mongodb').ObjectID;
+const stripe = require("stripe")("sk_test_51IonrPSIuSGmKLG43WGHbM7Lt2laDwau2QokpUm11u7IGVbd80orS5l5zY5c4qy46iHhXnLY7b5YwVtPBZrjKz88004HFvslzV")
+const uuid = require("uuidv4")
 //git add .
 //git push origin master
 //git push heroku HEAD:master
@@ -45,14 +48,27 @@ app.delete("/oppintment", async (req, res) => {
 app.delete("/oppintmentpatients", async (req, res) => {
     await DoctorsOppintmenTime.deleteMany({})
 })
-app.get("/patients-login", async (req, res) => {
-    const loginPatients = await Patients.find({ $or: [{ email: req.body.email, password: req.body.password }] })
-    console.log(loginPatients)
-    if (loginPatients.length > 0) {
-        res.send(loginPatients)
-    } else {
-        res.send(loginPatients)
-    }
+app.post("/patients-login", async (req, res) => {
+    // const loginPatients = await Patients.find({ $or: [{ email: req.body.email, password: req.body.password }] })
+    // console.log(loginPatients)
+    // if (loginPatients.length > 0) {
+    //    res.status(200).send(loginPatients)
+    // } else {
+    //     res.status(500).error({message:"User In Valid"})
+    // }
+    console.log(req.body)
+    Patients.find({ email: req.body.email })
+        .exec()
+        .then(item => {
+            console.log(item)
+            if (!item) {
+                return res.status(400).json({ error: "Incorrect username or password" });
+            }
+            else {
+                return res.status(200).send('ok');
+
+            }
+        })
 })
 app.post("/patients", async (req, res) => {
     console.log("req.body", req.body.pic)
@@ -86,7 +102,61 @@ app.post("/patients", async (req, res) => {
         })
     }
 })
+app.post("/doctors", async (req, res) => {
+    console.log("req.body", req.body.pic)
+    try {
 
+        const patient = new Patients({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            age: req.body.age,
+            Address: req.body.Address,
+            city: req.body.city,
+            State: req.body.state,
+            email: req.body.email,
+            contact: req.body.contact,
+            password: req.body.password,
+            pic: req.body.pic
+        })
+        console.log(patient)
+        await patient.save()
+            .then(data => {
+                console.log("data", data)
+                res.json({
+                    message: "Sign Up Successfully"
+                })
+            })
+    }
+
+    catch (e) {
+        res.json({
+            error: "Sign Up Failed"
+        })
+    }
+})
+//--------------------Payment Gatway---------------------------------------------
+app.post("/payment", (req, res) => {
+    const { product, token } = req.body
+    console.log("Product", product)
+    console.log("token", token)
+    const idmpontementKey = uuid()
+    return stripe.customers.create({
+        email: token.email,
+        source: token.id
+    })
+        .then(customer => {
+            stripe.charges.create({
+                amount: product.price * 100,
+                currency: "usd",
+                customer: customer.id,
+                receipt_email: token.email,
+                description: `Purchase Of Product`
+            }, { idmpontementKey })
+
+        })
+        .then(result => res.status(200).json(result))
+        .catch(err => console.log(err))
+})
 // ----------------------Doctors-------------------------
 app.get("/doctors", cors(), (req, res) => {
     Doctors.find()
@@ -99,8 +169,57 @@ app.get("/doctors", cors(), (req, res) => {
         })
 
 })
+app.post("/doctors-patient",(req, res)=>{
+        try{
+        const Array =[];
+        DoctorsOppintment.find({$and:[{firstName:req.body.firstName, lastName:req.body.lastName}]})
+         
+         .then(item => {
+            const _ID =ObjectId(item[0]._id);
+        
+            DoctorsOppintmenTime.find({"doctorId":_ID})
+        .then(Data=>{
+                return res.send(Data);
+            })
+            //  res.json({message:"success", data:item});
+         })
+       
+    }
+    catch{
+
+    }
+})
+app.post("/doctors-login", cors(), (req, res) => {
+       try{
+        Doctors.find({ email: req.body.email })
+        .then(item => {
+            console.log(item)
+            if (item.length == 0) {
+
+                 res.json({message:"error", error: "Incorrect username or password" });
+            }
+            else {
+                
+                 if(item[0].password==req.body.password){
+                     console.log("1")
+                    res.json({message:"success", data:item[0] });
+                 }
+                 else
+                 {
+                    console.log("2")
+                    res.json({message:"error", error: "Incorrect username or password" });
+                 }
+
+            }
+        })
+       }catch{
+         res.status(400).json({message:"error", error: "Incorrect username or password" });
+       }
+       
+})
+
 app.get("/getslambook", cors(), (req, res) => {
-      SlamBook.find()
+    SlamBook.find()
         .then((data) => {
 
             res.send(data)
@@ -124,18 +243,18 @@ app.get("/doctor-login", async (req, res) => {
     }
 })
 
-app.get("/slambookid/:id",cors(), async (req, res) => {
+app.get("/slambookid/:id", cors(), async (req, res) => {
     SlamBook.findById(req.params.id)
-    .then(data=>{
-      res.send(data)
-    })
-    .catch(error=>{
-        res.send(error)
-    })
+        .then(data => {
+            res.send(data)
+        })
+        .catch(error => {
+            res.send(error)
+        })
 
 
-  
-    
+
+
 })
 app.post("/doctor", async (req, res) => {
     if (await Doctors.findOne({ email: req.body.email })) {
@@ -161,7 +280,7 @@ app.post("/doctor", async (req, res) => {
             })
         }).error(error => {
             return res.json({
-                error: error
+                message: "error"
             })
         })
 
@@ -362,7 +481,7 @@ app.post("/user", async (req, res) => {
 })
 
 app.post("/book", async (req, res) => {
-       console.log("request come",req.body)
+    console.log("request come", req.body)
     try {
 
         const book = new Book({
@@ -375,7 +494,8 @@ app.post("/book", async (req, res) => {
             days: req.body.days,
             time: req.body.time,
             date: req.body.date,
-            docPic: req.body.docPic
+            docPic: req.body.docPic,
+            event: req.body.event
         })
 
         await book.save()
@@ -399,52 +519,52 @@ app.post("/book", async (req, res) => {
     }
 })
 
-app.get("/",(req,res)=>{
-   res.send("Welcome")
+app.get("/", (req, res) => {
+    res.send("Welcome")
 })
 
 
 
 app.post("/slambook", async (req, res) => {
-   
- try {
 
-     const slamBook = new SlamBook({
-          q1:req.body.q1,
-          q2:req.body.q2,
-          q3:req.body.q3,
-          q4:req.body.q4,
-          q5:req.body.q5,
-          q6:req.body.q6,
-          q7:req.body.q7,
-          q8:req.body.q8,
-          q9:req.body.q9,
-          q10:req.body.q10,
-          q11:req.body.q11,
-          q12:req.body.q12,
-        
-          
-     })
+    try {
 
-     await slamBook.save()
-         .then(data => {
+        const slamBook = new SlamBook({
+            q1: req.body.q1,
+            q2: req.body.q2,
+            q3: req.body.q3,
+            q4: req.body.q4,
+            q5: req.body.q5,
+            q6: req.body.q6,
+            q7: req.body.q7,
+            q8: req.body.q8,
+            q9: req.body.q9,
+            q10: req.body.q10,
+            q11: req.body.q11,
+            q12: req.body.q12,
 
-             res.json({
-                 message: "Done"
-             })
-         })
-         .catch(error => {
-             res.json({
-                 message: error
-             })
-         })
- }
 
- catch (e) {
-     res.json({
-         error: "Sign Up Failed"
-     })
- }
+        })
+
+        await slamBook.save()
+            .then(data => {
+
+                res.json({
+                    message: "Done"
+                })
+            })
+            .catch(error => {
+                res.json({
+                    message: error
+                })
+            })
+    }
+
+    catch (e) {
+        res.json({
+            error: "Sign Up Failed"
+        })
+    }
 })
 
 
