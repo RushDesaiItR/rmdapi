@@ -18,6 +18,7 @@ const Medicine = require("./models/medicine.js")
 const User = require("./models/user.js")
 const Book = require("./models/Book.js")
 const SlamBook = require("./models/slambook.js")
+const Feedback = require("./models/Feedback") 
 const app = express();
 var cors = require('cors')
 const port = process.env.PORT || 3800;
@@ -101,6 +102,25 @@ app.post("/patients", async (req, res) => {
             error: "Sign Up Failed"
         })
     }
+})
+app.post("feedback", async(req, res)=>{
+       try {
+           const Feedback = new Feedback({
+               email:req.body.email,
+               mark:req.body.mark,
+               feedback:req.body.feedback
+           })
+           await Feedback.save()
+           .then(data=>{
+               res.json({mgs:"Added" })
+           })
+           .catch(err=>{
+            res.json({mgs:"erro" })
+           
+           })
+       } catch (error) {
+           
+       }
 })
 app.post("/doctors", async (req, res) => {
     console.log("req.body", req.body.pic)
