@@ -68,7 +68,7 @@ app.post("/patients-login", async (req, res) => {
                 return res.status(400).json({ error: "Incorrect username or password" });
             }
             else {
-                return res.status(200).send('ok');
+                return res.status(200).json({message:"success"});
 
             }
         })
@@ -232,7 +232,8 @@ app.post("/user-data-patient",function(req, res){
     })
 })
 app.delete("/user-data-patient/:id",function(req, res){
-    let {id}=req.params;
+   
+ let {id}=req.params;
     console.log(req.params)
     DoctorsOppintmenTime.findByIdAndDelete(id)
     .then(resback=>{
