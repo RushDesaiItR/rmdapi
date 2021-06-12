@@ -4,6 +4,8 @@ require('dotenv').config()
 var ObjectId = require('mongodb').ObjectID;
 const stripe = require("stripe")("sk_test_51IonrPSIuSGmKLG43WGHbM7Lt2laDwau2QokpUm11u7IGVbd80orS5l5zY5c4qy46iHhXnLY7b5YwVtPBZrjKz88004HFvslzV")
 const uuid = require("uuidv4")
+const fs = require("fs")
+var http = require('http');
 //git add .
 //git push origin master
 //git push heroku HEAD:master
@@ -210,15 +212,39 @@ app.get("/doctors", cors(), (req, res) => {
         })
 
 })
-app.post("/user-data",cors(),(req, res)=>{
+app.post("/user-data",function(req, res){
+    console.log("call")
     Book.find({fullName:req.body.fullName})
-    .then(res=>{
-        res.send(res)
+    .then(resback=>{
+        res.send(resback)
     })
     .catch(err=>{
         console.log(err)
     })
 })
+app.delete("/user-databbok/:id",function(req, res){
+    console.log("id")
+    let {id}=req.params;
+    console.log(req.params)
+    Book.findByIdAndDelete(id)
+    .then(resback=>{
+        res.send(resback)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
+
+
+
+
+
+
+
+
+
+
 app.post("/doctors-patient",cors(),(req, res)=>{
         try{
         const Array =[];
