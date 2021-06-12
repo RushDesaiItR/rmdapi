@@ -212,9 +212,29 @@ app.get("/doctors", cors(), (req, res) => {
         })
 
 })
+
 app.post("/user-data",function(req, res){
-    console.log("call")
     Book.find({fullName:req.body.fullName})
+    .then(resback=>{
+        res.send(resback)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+app.post("/user-data-patient",function(req, res){
+    Patients.find({fullName:req.body.fullName})
+    .then(resback=>{
+        res.send(resback)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+app.delete("/user-data-patient/:id",function(req, res){
+    let {id}=req.params;
+    console.log(req.params)
+    DoctorsOppintmenTime.findByIdAndDelete(id)
     .then(resback=>{
         res.send(resback)
     })
