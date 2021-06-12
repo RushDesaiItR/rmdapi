@@ -210,7 +210,7 @@ app.get("/doctors", cors(), (req, res) => {
         })
 
 })
-app.post("/user-data",(req, res)=>{
+app.post("/user-data",cors(),(req, res)=>{
     Book.find({fullName:req.body.fullName})
     .then(res=>{
         res.send(res)
@@ -219,7 +219,7 @@ app.post("/user-data",(req, res)=>{
         console.log(err)
     })
 })
-app.post("/doctors-patient",(req, res)=>{
+app.post("/doctors-patient",cors(),(req, res)=>{
         try{
         const Array =[];
         DoctorsOppintment.find({$and:[{firstName:req.body.firstName, lastName:req.body.lastName}]})
