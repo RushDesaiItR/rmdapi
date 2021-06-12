@@ -71,6 +71,24 @@ app.post("/patients-login", async (req, res) => {
             }
         })
 })
+
+app.post("/users-login", async (req, res) => {
+     res.status(500).error({message:"User In Valid"})
+    // }
+    console.log(req.body)
+    Users.find({ email: req.body.email })
+        .exec()
+        .then(item => {
+            console.log(item)
+            if (!item) {
+                return res.send({message:"Failed"});
+            }
+            else {
+                return res.send({message:"success"});
+
+            }
+        })
+})
 app.post("/patients", async (req, res) => {
     console.log("req.body", req.body.pic)
     try {
@@ -103,19 +121,22 @@ app.post("/patients", async (req, res) => {
         })
     }
 })
-app.post("feedback", async(req, res)=>{
+app.post("/feedback", async(req, res)=>{
        try {
-           const Feedback = new Feedback({
+           console.log(req.body)
+           const feedback = new Feedback({
                email:req.body.email,
                mark:req.body.mark,
                feedback:req.body.feedback
            })
-           await Feedback.save()
+           await feedback.save()
            .then(data=>{
                res.json({mgs:"Added" })
+               console.log(data)
            })
            .catch(err=>{
-            res.json({mgs:"erro" })
+            res.json({mgs:"error" })
+            console.log(err)
            
            })
        } catch (error) {
@@ -188,6 +209,15 @@ app.get("/doctors", cors(), (req, res) => {
             res.send(err)
         })
 
+})
+app.post("/user-data",(req, res)=>{
+    Book.find({fullName:req.body.fullName})
+    .then(res=>{
+        res.send(res)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
 })
 app.post("/doctors-patient",(req, res)=>{
         try{
@@ -461,16 +491,7 @@ app.get("/medicine", async (req, res) => {
 //----------------------------dipak api
 
 
-app.get("/user-login", async (req, res) => {
-    console.log(req.body)
-    // const user = await User.find({ $or: [{ email: req.body.email, password: req.body.password }] })
-    // console.log(user)
-    // if (user.length > 0) {
-    //     res.send(user)
-    // } else {
-    //     res.send(user)
-    // }
-})
+
 app.post("/user", async (req, res) => {
 
     try {
