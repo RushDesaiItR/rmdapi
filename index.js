@@ -60,10 +60,10 @@ app.post("/patients-login", async (req, res) => {
     //     res.status(500).error({message:"User In Valid"})
     // }
     console.log(req.body)
-    Patients.find({ email: req.body.email })
+    Patients.find({$and:[{email:req.body.email},{password:req.body.password}]})
         .exec()
         .then(item => {
-            console.log(item)
+           
             if (!item) {
                 return res.status(400).json({ error: "Incorrect username or password" });
             }
