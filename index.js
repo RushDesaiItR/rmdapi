@@ -225,6 +225,7 @@ app.post("/user-data",function(req, res){
     })
 })
 app.post("/user-data-patient",function(req, res){
+    console.log(req.body.fullName)
     Patients.find({fullName:req.body.fullName})
     .then(resback=>{
         res.send(resback)
