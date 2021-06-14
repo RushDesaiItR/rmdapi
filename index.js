@@ -234,11 +234,20 @@ app.post("/user-data-patient",function(req, res){
         console.log(err)
     })
 })
+app.post("/userby-opt",function(req, res){
+    DoctorsOppintmenTime.find({patientName:req.body.fullName})
+    .then(resback=>{
+        res.send(resback)
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
 app.delete("/user-data-patient/:id",function(req, res){
    
  let {id}=req.params;
     console.log(req.params)
-    DoctorsOppintmenTime.findByIdAndDelete(id)
+    DoctorsOppintmenTime.findOneAndDelete({patientName:id})
     .then(resback=>{
         res.send(resback)
     })
