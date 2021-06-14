@@ -237,6 +237,7 @@ app.post("/user-data-patient",function(req, res){
 app.post("/userby-opt",function(req, res){
     DoctorsOppintmenTime.find({patientName:req.body.fullName})
     .then(resback=>{
+       
         res.send(resback)
     })
     .catch(err=>{
