@@ -225,9 +225,10 @@ app.post("/user-data",function(req, res){
     })
 })
 app.post("/user-data-patient",function(req, res){
-    console.log(req.body.fullName)
-    Patients.find({fullName:req.body.fullName})
+    console.log(req.body)
+    Patients.find({$and:[{firstName:req.body.firstName}, {lastName:req.body.lastName}]})
     .then(resback=>{
+        console.log(resback)
         res.send(resback)
     })
     .catch(err=>{
@@ -244,11 +245,11 @@ app.post("/userby-opt",function(req, res){
         console.log(err)
     })
 })
-app.delete("/user-data-patient/:id",function(req, res){
+app.delete("/user-data-patient/:name",function(req, res){
    
- let {id}=req.params;
-    console.log(req.params)
-    DoctorsOppintmenTime.findOneAndDelete({patientName:id})
+ let {name}=req.params;
+    console.log("name",name)
+    DoctorsOppintmenTime.findOneAndDelete({patientName:name})
     .then(resback=>{
         res.send(resback)
     })
