@@ -6,6 +6,10 @@ const DoctorsOppintmentTime = new mongoose.Schema({
         require:true,
         trim:true,
     },
+    email:{
+        type:String,
+        require:true
+    },
     Time:{
         type:String,
         require:true

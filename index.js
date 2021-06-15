@@ -417,7 +417,8 @@ app.post("/doctorsoppintment", async (req, res) => {
                 patientName: req.body.patientName,
                 Time: req.body.Time,
                 Date: req.body.Date,
-                doctorId: DoctorsOppintmentCheck._id
+                doctorId: DoctorsOppintmentCheck._id,
+                email:email
             })
 
             await doctorsOppintmenTime.save()
