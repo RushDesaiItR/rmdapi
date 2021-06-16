@@ -21,6 +21,14 @@ const User = require("./models/user.js")
 const Book = require("./models/Book.js")
 const SlamBook = require("./models/slambook.js")
 const Feedback = require("./models/Feedback") 
+const Cart = require("./models/Cart") 
+const CartUser = require("./models/CartUser") 
+
+
+
+
+
+
 const app = express();
 var cors = require('cors')
 const port = process.env.PORT || 3800;
@@ -92,6 +100,41 @@ app.post("/users-login", async (req, res) => {
 
             }
         })
+})
+app.post("/cartuser", async(req, res)=>{
+    console.log("cartuser",req.body)
+    const cartUser = new CartUser({
+        conumerName:req.body.conumerName,
+        address:req.body.address,
+        contact:req.body.contact
+     })
+     await cartUser.save()
+            .then(data => {
+                console.log("data", data)
+                res.json({
+                    message: "Added Successfully"
+                })
+            })
+})
+app.post("/cart", async(req,res)=>{
+     const cart = new Cart({
+        cname:req.body.cname,
+        name:req.body.name,
+        price:req.body.price
+     })
+     await cart.save()
+            .then(data => {
+                console.log("data", data)
+                res.json({
+                    message: "Added Successfully"
+                })
+            })
+})
+app.get("/cart",(req, res)=>{
+    Cart.find({})
+    .then(data=>{
+        res.send(data)
+    })
 })
 app.post("/patients", async (req, res) => {
     console.log("req.body", req.body.pic)
