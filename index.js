@@ -130,6 +130,7 @@ app.post("/cart", async(req,res)=>{
                 })
             })
 })
+
 app.get("/cart",(req, res)=>{
     Cart.find({})
     .then(data=>{
@@ -312,7 +313,15 @@ app.delete("/user-databbok/:id",function(req, res){
         console.log(err)
     })
 })
-
+app.get("/room-book", function(req, res){
+    Book.find({})
+    .then(resback=>{
+        res.send(resback)
+    })
+    .catch(err=>{
+        res.send(err)
+    })
+})
 
 
 
