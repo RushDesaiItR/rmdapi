@@ -50,6 +50,7 @@ app.get("/patients", (req, res) => {
         })
 
 })
+//olkjiuhgyfdrs
 app.delete("/patients", async (req, res) => {
     await Patients.deleteMany({})
 })
