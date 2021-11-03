@@ -6,6 +6,7 @@ const stripe = require("stripe")("sk_test_51IonrPSIuSGmKLG43WGHbM7Lt2laDwau2Qokp
 const uuid = require("uuidv4")
 const fs = require("fs")
 var http = require('http');
+const Users = require("./models/user")
 //git add .
 //git push origin master
 //git push heroku HEAD:master
