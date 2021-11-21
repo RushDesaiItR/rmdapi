@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
-require('dotenv').config()
+
+const config = require("../config/config");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../modelsapp/user.js");
+const User = require("../modelsapp/user");
+const PostUser = require("../modelsapp/post")
 
-
-mongoose.connect(process.env.DB_HOST,
-    { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect("mongodb+srv://RushikeshDesai:Mahavir@7890@cluster0.p3bve.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 mongoose.connection.on("connected", () => {
     console.log("Connected")
 })
@@ -40,8 +41,107 @@ exports.register = async (req, res) => {
 exports.getData = async (req, res)=>{
     res.send("jkjkjk")
 }
-exports.login = async (req, res) => {
+exports.createPost = async (req, res)=>{
+   
+     let post = new PostUser({
+        title: req.body.title,
+        description: req.body.description,
+        imageUrl:req.body.imageUrl,
+        createdBy:req.params.id
+     })
+     post.save(async(err, savedPost)=>{
+         if(err){
+            console.log(err)
+         }else{
+            const userCheck = await User.findOne({ _id: req.params.id })
+            userCheck.posts.push(savedPost._id)
+            userCheck.save();
+            res.status(200).send(savedPost)
+         }
+     })
+}
+exports.getUserData = async(req, res)=>{
+    
+    User.findOne({  _id: req.params.id }, async (err, user) => {
+        if (err) {
+            console.log(err)
+        } else {
+            if (user) {
+                res.status(200).send(user);
+            }
+            else {
+                res.status(401).send('no user found')
+            }
 
+        }
+    })
+}
+exports.getUserPosts = async(req, res)=>{
+    User.findOne({_id: req.params.id})
+    .populate('posts')
+    .exec((err, arr)=>{
+        res.status(200).send(arr.posts)
+     })
+    
+}
+
+exports.getUserpendinFriendlist = async (req, res)=>{
+    console.log("sdsd")
+    User.findOne({_id: req.params.id})
+    .populate('pendinFriendlist')
+    .exec((err, arr)=>{
+        res.status(200).send(arr)
+    })
+}
+
+exports.getUserFriendlist = async (req, res)=>{
+    
+    User.findOne({_id: req.params.id})
+    .populate('friendlist')
+    .exec((err, arr)=>{
+        res.status(200).send(arr)
+    })
+}
+
+
+
+exports.createFriend = async(req, res)=>{
+    const userCheck = await User.findOne({ _id: req.params.id })
+    userCheck.pendinFriendlist.push(req.body._id)
+    userCheck.save();
+    res.status(200).send(userCheck)
+}
+exports.addIntoFriendList=async(req, res)=>{
+  //  const userCheck = await User.findOne({ _id: req.params.id })
+    User.findOneAndUpdate({  _id: req.params.id }, {
+        $pull: {
+            'pendinFriendlist': req.body._id
+        }
+    }, async function (err, model) {
+        if (!err) {
+            const userCheck = await User.findOne({ _id: req.params.id })
+            userCheck.friendlist.push(req.body._id)
+            userCheck.save();
+            res.json("friend Added Sucessfully")
+        }
+        else {
+            res.status(500).json(err)
+        }
+    });
+   // userCheck.find(req.body._id)
+    // userCheck.friendlist.push(req.params.id)
+    // userCheck.save();
+   
+
+}
+exports.getAllUser = async(req, res)=>{
+   User.find({})
+       .then(response=>{
+           res.send(response)
+       })
+}
+exports.login = async (req, res) => {
+ 
     User.findOne({ email: req.body.email }, async (err, user) => {
         if (err) {
             console.log(err)
