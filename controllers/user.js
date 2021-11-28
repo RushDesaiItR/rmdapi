@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../modelsapp/user");
 const PostUser = require("../modelsapp/post")
 var XLSX = require('xlsx');
-app.use(express.json());
+
 mongoose.connect("mongodb+srv://RushikeshDesai:Mahavir@7890@cluster0.p3bve.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 mongoose.connection.on("connected", () => {
