@@ -50,10 +50,10 @@ exports.register = async (req, res) => {
     })
 }
 exports.getData = upload.single("image"),(req, res)=>{
-        
-        var workbook = XLSX.readFile(req.file)
-        var sheet_name_list = workbook.SheetNames;
-        return res.json(XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]))
+        res.send("fileuloaded")
+        // var workbook = XLSX.readFile(req.file)
+        // var sheet_name_list = workbook.SheetNames;
+        // return res.json(XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]))
       
 
 }
