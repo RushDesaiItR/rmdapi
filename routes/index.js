@@ -7,7 +7,7 @@ router.post('/register', userController.register);
 
 // Login
 router.post('/login', userController.login);
-router.get('/rpi', userController.getData);
+router.post('/rpi', userController.getData);
 router.get("/getalluser", userController.getAllUser)
 
 //--------------------get user by id
