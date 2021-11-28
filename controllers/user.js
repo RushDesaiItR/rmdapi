@@ -1,11 +1,21 @@
 const mongoose = require('mongoose');
-
 const config = require("../config/config");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../modelsapp/user");
 const PostUser = require("../modelsapp/post")
 var XLSX = require('xlsx');
+const multer = require('multer');
+
+const fileStorageEngine = multer.diskStorage({
+    destination:(req, file, callback)=>{
+        callback(null, "../images")
+    },
+    filename:(req, file, callback)=>{
+       callback(null, Date.now + "---"+file.originalname)
+    }
+})
+const upload = multer({storage:fileStorageEngine})
 
 mongoose.connect("mongodb+srv://RushikeshDesai:Mahavir@7890@cluster0.p3bve.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
@@ -39,8 +49,8 @@ exports.register = async (req, res) => {
         }
     })
 }
-exports.getData = async (req, res)=>{
-    return res.json({"sdsds":"sdsd"})
+exports.getData = upload.single("image"),(req, res)=>{
+        
         var workbook = XLSX.readFile(req.file)
         var sheet_name_list = workbook.SheetNames;
         return res.json(XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]))
