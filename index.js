@@ -763,7 +763,8 @@
 const express = require('express');
 const app = express();
 var XLSX = require('xlsx');
-app.use(express.json()); //or use body-parser middleware to parse the JSON body from HTTP request
+app.use(express.json()); //or use body-parser middleware to parse the JSON body from HTTP 
+app.use(express.static("uploads"))
 const port = process.env.PORT || 3800;
 // Import Routes
 const authRoute = require('./routes/index');

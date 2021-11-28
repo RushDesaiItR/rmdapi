@@ -6,16 +6,17 @@ const User = require("../modelsapp/user");
 const PostUser = require("../modelsapp/post")
 var XLSX = require('xlsx');
 const multer = require('multer');
+const path = require('path');
 
 const fileStorageEngine = multer.diskStorage({
-    destination:(req, file, callback)=>{
-        callback(null, "../images")
+    destination:(req, file, cb)=>{
+        cb(null, path.join(__dirname, '../uploads/'))
     },
-    filename:(req, file, callback)=>{
-       callback(null, Date.now + "-"+file.originalname)
+    filename:(req, file, cb)=>{
+       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
     }
 })
-const upload = multer({storage:fileStorageEngine})
+const upload = multer({storage:fileStorageEngine}).single("image")
 
 mongoose.connect("mongodb+srv://RushikeshDesai:Mahavir@7890@cluster0.p3bve.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
@@ -49,11 +50,21 @@ exports.register = async (req, res) => {
         }
     })
 }
-exports.getData = upload.single("image"),(req, res)=>{
-        res.send("fileuloaded")
-        // var workbook = XLSX.readFile(req.file)
-        // var sheet_name_list = workbook.SheetNames;
-        // return res.json(XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]))
+exports.getData = (req, res)=>{
+  upload(req, res, function(err){
+      if(err){
+          res.send("err")
+      }else{
+             var workbook = XLSX.readFile(req.file.path)
+             var sheet_name_list = workbook.SheetNames;
+             console.log(workbook.Sheets[sheet_name_list[0]])
+             return res.json(XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]))
+          
+      }
+  })
+   
+   
+       
       
 
 }
