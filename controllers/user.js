@@ -12,7 +12,7 @@ const fileStorageEngine = multer.diskStorage({
         callback(null, "../images")
     },
     filename:(req, file, callback)=>{
-       callback(null, Date.now + "---"+file.originalname)
+       callback(null, Date.now + "-"+file.originalname)
     }
 })
 const upload = multer({storage:fileStorageEngine})
