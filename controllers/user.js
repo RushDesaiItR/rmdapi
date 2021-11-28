@@ -40,7 +40,6 @@ exports.register = async (req, res) => {
 }
 exports.getData = async (req, res)=>{
     
-        return res.send("sdsd")
         var workbook = XLSX.readFile(req.file)
         var sheet_name_list = workbook.SheetNames;
         res.send(XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]))
