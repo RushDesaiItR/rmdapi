@@ -3,9 +3,11 @@
 const express = require('express');
 var XLSX = require('xlsx');
 const app = express();
-
-app.use(express.json()); //or use body-parser middleware to parse the JSON body from HTTP request
+var cors = require('cors')
 const port = process.env.PORT || 3800;
+app.use(cors())
+app.use(express.json());
+
 app.post("/readfile",(req, res)=>{
    
     var workbook = XLSX.readFile(req.file)
