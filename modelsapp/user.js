@@ -13,12 +13,19 @@ const userSchema = new Schema({
           ref: 'post'
         }
      ],
+     stories:[
+       {
+         type:Schema.Types.ObjectId,
+         ref:'story'
+       }
+     ],
      friendlist:[
        {
          type:Schema.Types.ObjectId,
          ref: 'user'
        }
      ],
+
      pendinFriendlist:[
       {
         type:Schema.Types.ObjectId,

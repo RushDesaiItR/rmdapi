@@ -19,7 +19,13 @@ router.get("/getpostsbyid/:id", userController.getUserPosts)
 router.get("/getpendingreqbyid/:id", userController.getUserpendinFriendlist)
 //----------------get user friends
 router.get("/getuserfriends/:id", userController.getUserFriendlist)
+//------------create user story
+router.post("/story/:id",userController.createStory)
+//----------------get all story
+router.get("/getallstory",userController.getAllStories)
 // Auth user only
+
+
 router.get('/events', verifyUserToken, IsUser, userController.userEvent);
 
 // Auth Admin only

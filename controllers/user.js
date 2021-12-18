@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../modelsapp/user");
 const PostUser = require("../modelsapp/post")
+const Story = require("../modelsapp/Story")
 var XLSX = require('xlsx');
 const multer = require('multer');
 const path = require('path');
@@ -166,6 +167,40 @@ exports.getAllUser = async(req, res)=>{
        .then(response=>{
            res.send(response)
        })
+}
+
+exports.createStory = async (req, res)=>{
+   
+    let story = new Story({
+        src:req.body.src,
+        createdBy:req.params.id,
+
+    })
+    story.save(async(err, savedStory)=>{
+         if(err){
+           return res.status(500).send(err)
+         }else{
+           const userCheck = await User.findOne({_id: req.params.id})
+            console.log(userCheck)
+            userCheck.stories.push(savedStory._id);
+            userCheck.save();
+          
+           return res.status(200).send(savedStory)
+         }
+    })
+
+
+}
+
+
+exports.getAllStories = async (req, res)=>{
+    Story.find({})
+    .then(response=>{
+        res.status(200).json(response)
+    })
+    .error(err=>{
+        res.status(400).send("Something Went Wrong")
+    })
 }
 exports.login = async (req, res) => {
  
