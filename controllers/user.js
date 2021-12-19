@@ -216,7 +216,7 @@ exports.login = async (req, res) => {
                 let payload = { id: user._id, user_type_id: user.user_type_id };
                 const token = jwt.sign(payload, config.TOKEN_SECRET);
 
-                res.status(200).header("auth-token", token).send({ "token": token });
+                res.status(200).header("auth-token", token).send({ "token": token, user });
             }
             else {
                 res.status(401).send('Invalid mobile')
