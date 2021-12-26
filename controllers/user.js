@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../modelsapp/user");
 const PostUser = require("../modelsapp/post")
-const Story = require("../modelsapp/StoryOld")
+const Story = require("../modelsapp/StoryNew")
 var XLSX = require('xlsx');
 const multer = require('multer');
 const path = require('path');
@@ -105,47 +105,72 @@ exports.getUserData = async(req, res)=>{
         }
     })
 }
-exports.getHomeData = async(req, res)=>{
+exports.getHomeAllStories = async(req, res)=>{
+ 
   User.findOne({_id: req.params.id})
-  .populate({
-    path: 'friendlist',
-    })
- .exec((err, arr)=>{
-    var homeDataArray=getHomeDataStoryData(arr)
-    res.status(200).send(homeDataArray)
+
+.populate({ path: 'friendlist', populate: { path: 'storiesnew' }})
+   .exec((err, arr)=>{
+     
+     res.send(arr)
+   
     })
 }
-function getHomeDataStoryData(arr){
+exports.getHomeAllPosts = async(req, res)=>{
+    User.findOne({_id: req.params.id})
+
+    .populate({ path: 'friendlist', populate: { path: 'posts' }})
+       .exec((err, arr)=>{
+         
+         res.send(arr)
+       
+        })
+}
+ getHomeDataStoryData = async(arr)=>{
    // console.log("arr","----------",arr.friendlist[0].stories)
    //arrayDummy.length
     var arrayDummy = [];
+    var finalArrayStory=[];
     var storyArray = [];
     arrayDummy.push(arr)
+    var storyArrReturned=[]
     for(var friend=0;friend < arrayDummy[0].friendlist.length;friend++){
-        arrayDummy[0].friendlist[friend].storiesArray=[];
-
-        for(var stories=0;stories < arrayDummy[0].friendlist[friend].stories.length;stories++){
-            var storyArrReturned=returnUserStory(arrayDummy[0].friendlist[friend].stories[stories])
-            arrayDummy[0].friendlist[friend].stories=storyArrReturned;
-         //   console.log(friend,"---------------", arrayDummy[0].friendlist[friend].stories.length)
+      
+        
+        
+        for(var stories=0;stories < arrayDummy[0].friendlist[friend].storiesnew.length;stories++){
+           
+            let storyObject;
+            Story.findOne({ _id: arrayDummy[0].friendlist[friend].storiesnew[stories]}).then(res=>{
+                storyObject=res;
+                console.log("PPPPuuuuuuuuuuuuuuP",res)
+            })
+            console.log("PPPPP",storyObject)
+            arrayDummy[0].friendlist[friend].copyArr.push(storyObject)
+            //  if(storyObject){
+                
+            //     arrayDummy[0].friendlist[friend].copyArr.push(storyObject)
+               
+            //  }
+           // storyArrReturned[friend].userstories.push(storyObject)
+            //   console.log(friend,"---------------", arrayDummy[0].friendlist[friend].stories.length)
            // console.log(friend,"--------",arrayDummy[0].friendlist[friend].stories[stories])
         }
+      //  finalArrayStory.push(storyArrReturned);
+      
     }
-    return arrayDummy[0].friendlist
+   // console.log(friend,"--------",storyArrReturned)
+    return arrayDummy;
    
    
 }
 
 returnUserStory=async(storyId)=>{
-    console.log(storyId)
-    Story.findOne({ _id: storyId }, async (err, story) => {
-        if (err) {
-            console.log(err)
-        } else {
-          return story;
-
-        }
+    
+    Story.findOne({ _id: storyId}).then(res=>{
+        console.log(res)
     })
+       
  
 }
 
@@ -234,7 +259,7 @@ exports.createStory = async (req, res)=>{
          }else{
            const userCheck = await User.findOne({_id: req.params.id})
             console.log(userCheck)
-            userCheck.stories.push(savedStory._id);
+            userCheck.storiesnew.push(savedStory._id);
             userCheck.save();
           
            return res.status(200).send(savedStory)

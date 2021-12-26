@@ -16,8 +16,16 @@ router.get("/getuserbyid/:id", userController.getUserData)
 //-------------------get user posts
 router.get("/getpostsbyid/:id", userController.getUserPosts)
 //-------------------get get User pending Friend list
-//---------------get home data
-router.get("/gethomedatabyid/:id",userController.getHomeData)
+//---------------get home data----------IMP
+
+
+router.get("/gethomedatabyid/:id",userController.getHomeAllStories)
+router.get("/gethomedatabyidtwo/:id",userController.getHomeAllPosts)
+
+
+
+
+//-----------------------------------------------------------
 router.get("/getpendingreqbyid/:id", userController.getUserpendinFriendlist)
 //----------------get user friends
 router.get("/getuserfriends/:id", userController.getUserFriendlist)

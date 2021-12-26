@@ -8,16 +8,17 @@ const userSchema = new Schema({
     name:String,
     user_type_id:Number,
     imageUrl:String,
+    copyArr:Array,
     posts:[
         {
          type:Schema.Types.ObjectId,
           ref: 'post'
         }
      ],
-     stories:[
+     storiesnew:[
        {
          type:Schema.Types.ObjectId,
-         ref:'story'
+         ref:'storynew'
        }
      ],
      friendlist:[
