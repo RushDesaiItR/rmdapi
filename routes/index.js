@@ -12,10 +12,12 @@ router.get("/getalluser", userController.getAllUser)
 
 //--------------------get user by id
 router.get("/getuserbyid/:id", userController.getUserData)
+
 //-------------------get user posts
 router.get("/getpostsbyid/:id", userController.getUserPosts)
 //-------------------get get User pending Friend list
-
+//---------------get home data
+router.get("/gethomedatabyid/:id",userController.getHomeData)
 router.get("/getpendingreqbyid/:id", userController.getUserpendinFriendlist)
 //----------------get user friends
 router.get("/getuserfriends/:id", userController.getUserFriendlist)

@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../modelsapp/user");
 const PostUser = require("../modelsapp/post")
-const Story = require("../modelsapp/Story")
+const Story = require("../modelsapp/StoryOld")
 var XLSX = require('xlsx');
 const multer = require('multer');
 const path = require('path');
@@ -25,7 +25,7 @@ mongoose.connection.on("connected", () => {
     console.log("Connected")
 })
 exports.register = async (req, res) => {
-
+   console.log(req.body.imageUrl)
     //Hash password
     const salt = await bcrypt.genSalt(10);
     const hasPassword = await bcrypt.hash(req.body.password, salt);
@@ -35,7 +35,8 @@ exports.register = async (req, res) => {
         email: req.body.email,
         name: req.body.name,
         password: hasPassword,
-        user_type_id: req.body.user_type_id
+        user_type_id: req.body.user_type_id,
+        imageUrl:req.body.imageUrl
     })
 
     // Save User in the database
@@ -104,11 +105,58 @@ exports.getUserData = async(req, res)=>{
         }
     })
 }
+exports.getHomeData = async(req, res)=>{
+  User.findOne({_id: req.params.id})
+  .populate({
+    path: 'friendlist',
+    })
+ .exec((err, arr)=>{
+    var homeDataArray=getHomeDataStoryData(arr)
+    res.status(200).send(homeDataArray)
+    })
+}
+function getHomeDataStoryData(arr){
+   // console.log("arr","----------",arr.friendlist[0].stories)
+   //arrayDummy.length
+    var arrayDummy = [];
+    var storyArray = [];
+    arrayDummy.push(arr)
+    for(var friend=0;friend < arrayDummy[0].friendlist.length;friend++){
+        arrayDummy[0].friendlist[friend].storiesArray=[];
+
+        for(var stories=0;stories < arrayDummy[0].friendlist[friend].stories.length;stories++){
+            var storyArrReturned=returnUserStory(arrayDummy[0].friendlist[friend].stories[stories])
+            arrayDummy[0].friendlist[friend].stories=storyArrReturned;
+         //   console.log(friend,"---------------", arrayDummy[0].friendlist[friend].stories.length)
+           // console.log(friend,"--------",arrayDummy[0].friendlist[friend].stories[stories])
+        }
+    }
+    return arrayDummy[0].friendlist
+   
+   
+}
+
+returnUserStory=async(storyId)=>{
+    console.log(storyId)
+    Story.findOne({ _id: storyId }, async (err, story) => {
+        if (err) {
+            console.log(err)
+        } else {
+          return story;
+
+        }
+    })
+ 
+}
+
+exports.getHomeDataPostData = async(req, res)=>{
+    
+}
 exports.getUserPosts = async(req, res)=>{
     User.findOne({_id: req.params.id})
     .populate('posts')
     .exec((err, arr)=>{
-        res.status(200).send(arr.posts)
+        res.status(200).send(arr)
      })
     
 }
@@ -163,6 +211,10 @@ exports.addIntoFriendList=async(req, res)=>{
 
 }
 exports.getAllUser = async(req, res)=>{
+    console.log("gfbnnb")
+//    await User.remove({});
+//    await Story.remove({}) 
+//    await PostUser.remove({})
    User.find({})
        .then(response=>{
            res.send(response)
