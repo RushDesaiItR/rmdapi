@@ -126,6 +126,23 @@ exports.getHomeAllPosts = async(req, res)=>{
        
         })
 }
+exports.getHomeAllUserSuggestions = async(req, res)=>{
+    var suggestionList=[];
+    User.findOne({_id: req.params.id})
+    .populate({ path: 'friendlist'})
+    .exec((err, arr)=>{
+        console.log(arr)
+        for(var friend=0;arr[0].friendlist[0];friend++){
+            console.log("------",arr[0].friendlist[friend])
+        }
+        res.send(arr)
+    })
+    // User.findOne({_id: req.params.id})
+    //  .populate({ path: 'friendlist', populate: { path: 'friendlist' }})
+    //    .exec((err, arr)=>{
+    //        res.send(arr)
+    //   })
+}
  getHomeDataStoryData = async(arr)=>{
    // console.log("arr","----------",arr.friendlist[0].stories)
    //arrayDummy.length
