@@ -126,6 +126,16 @@ exports.getHomeAllPosts = async(req, res)=>{
        
         })
 }
+exports.getFriendsById = async(req, res)=>{
+    User.findOne({_id: req.params.id})
+
+    .populate({ path: 'friendlist'})
+       .exec((err, arr)=>{
+         
+         res.send(arr)
+       
+        })   
+}
 exports.getHomeAllUserSuggestions = async(req, res)=>{
     var suggestionList=[];
     User.findOne({_id: req.params.id})

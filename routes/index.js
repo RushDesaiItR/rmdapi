@@ -20,6 +20,7 @@ router.get("/getpostsbyid/:id", userController.getUserPosts)
 
 
 router.get("/gethomedatabyid/:id",userController.getHomeAllStories)
+router.get("/getfriendsbyid/:id",userController.getFriendsById)
 // router.get("/gethomedatabyidtwo/:id",userController.getHomeAllPosts)
 // router.get("/gethomedatabyidthree/:id",userController.getHomeAllUserSuggestions)
 
