@@ -107,14 +107,15 @@ exports.getUserData = async(req, res)=>{
 }
 exports.getHomeAllStories = async(req, res)=>{
  
-  User.findOne({_id: req.params.id})
+   //mmmm
+   User.findOne({_id: req.params.id})
 
-.populate({ path: 'friendlist', populate: { path: 'storiesnew' }})
-   .exec((err, arr)=>{
-     
-     res.send(arr)
-   
-    })
+   .populate({ path: 'friendlist', populate: { path: 'storiesnew' }})
+      .exec((err, arr)=>{
+        
+        res.send(arr)
+      
+       })
 }
 exports.getHomeAllPosts = async(req, res)=>{
     User.findOne({_id: req.params.id})
