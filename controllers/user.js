@@ -48,7 +48,7 @@ exports.register = async (req, res) => {
             let payload = { id: registeredUser._id, user_type_id: req.body.user_type_id || 0 };
             const token = jwt.sign(payload, config.TOKEN_SECRET);
 
-            res.status(200).send({ token })
+            res.status(200).send({ token, registeredUser})
         }
     })
 }
