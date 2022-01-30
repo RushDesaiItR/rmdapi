@@ -32,7 +32,14 @@ const userSchema = new Schema({
       {
         type:Schema.Types.ObjectId,
         ref: 'user'
-      }
+      },
+    ],
+      sendedFriendlist:[
+        {
+          type:Schema.Types.ObjectId,
+          ref: 'user'
+        },
+      
     ],
 
 },{timestamps:true});

@@ -247,7 +247,11 @@ exports.createFriend = async(req, res)=>{
     const userCheck = await User.findOne({ _id: req.params.id })
     userCheck.pendinFriendlist.push(req.body._id)
     userCheck.save();
-    res.status(200).send(userCheck)
+
+    const userCheckSelf = await User.findOne({ _id:req.body._id })
+    userCheckSelf.pendinFriendlist.push(req.params.id)
+    userCheckSelf.save();
+    res.status(200).send(userCheckSelf)
 }
 exports.addIntoFriendList=async(req, res)=>{
   //  const userCheck = await User.findOne({ _id: req.params.id })
@@ -272,17 +276,22 @@ exports.addIntoFriendList=async(req, res)=>{
    
 
 }
-exports.getAllUser = async(req, res)=>{
+exports.deleteAllData=async(req,res)=>{
     console.log("gfbnnb")
-//    await User.remove({});
-//    await Story.remove({}) 
-//    await PostUser.remove({})
-   User.find({})
-       .then(response=>{
-           res.send(response)
-       })
+    await User.remove({});
+    await Story.remove({}) 
+    await PostUser.remove({})
 }
+exports.getAllUser = async(req, res)=>{
+  
+    User.find({})
+        .then(response=>{
+            res.send(response)
+        })
+}
+exports.cleanData=async(req, res)=>{
 
+}
 exports.createStory = async (req, res)=>{
    
     let story = new Story({
