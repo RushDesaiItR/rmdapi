@@ -245,13 +245,16 @@ exports.updateProfile=async(req, res)=>{
 }
 exports.createFriend = async(req, res)=>{
     const userCheck = await User.findOne({ _id: req.params.id })
+    console.log("FIRST",userCheck)
     userCheck.pendinFriendlist.push(req.body._id)
     userCheck.save();
 
     const userCheckSelf = await User.findOne({ _id:req.body._id })
-    userCheckSelf.pendinFriendlist.push(req.params.id)
+    console.log("SECOND",userCheckSelf)
+    
+    userCheckSelf.sendedFriendlist.push(req.params.id)
     userCheckSelf.save();
-    res.status(200).send(userCheckSelf)
+    res.status(200).send(userCheck)
 }
 exports.addIntoFriendList=async(req, res)=>{
   //  const userCheck = await User.findOne({ _id: req.params.id })
@@ -262,7 +265,26 @@ exports.addIntoFriendList=async(req, res)=>{
     }, async function (err, model) {
         if (!err) {
             const userCheck = await User.findOne({ _id: req.params.id })
+            console.log("1-----------------",userCheck)
             userCheck.friendlist.push(req.body._id)
+            userCheck.save();
+           
+        }
+        else {
+            res.status(500).json(err)
+        }
+    });
+
+
+    User.findOneAndUpdate({  _id:req.body._id }, {
+        $pull: {
+            'sendedFriendlist':req.params.id
+        }
+    }, async function (err, model) {
+        if (!err) {
+            const userCheck = await User.findOne({  _id:req.body._id })
+            console.log("2-----------------",userCheck)
+            userCheck.friendlist.push(req.params.id)
             userCheck.save();
             res.json("friend Added Sucessfully")
         }
@@ -281,6 +303,7 @@ exports.deleteAllData=async(req,res)=>{
     await User.remove({});
     await Story.remove({}) 
     await PostUser.remove({})
+    res.send({"all":"deleted all"})
 }
 exports.getAllUser = async(req, res)=>{
   
@@ -289,9 +312,7 @@ exports.getAllUser = async(req, res)=>{
             res.send(response)
         })
 }
-exports.cleanData=async(req, res)=>{
 
-}
 exports.createStory = async (req, res)=>{
    
     let story = new Story({
