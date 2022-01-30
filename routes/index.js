@@ -41,7 +41,7 @@ router.get('/events', verifyUserToken, IsUser, userController.userEvent);
 
 // Auth Admin only
 router.get('/special', verifyUserToken, IsAdmin, userController.adminEvent);
-router.put("/updateprofile",userController.updateProfile)
+router.put("/updateprofile/:id",userController.updateProfile)
 router.post("/post/:id", userController.createPost);
 router.post("/requestfriend/:id", userController.createFriend);
 router.post("/createfriend/:id", userController.addIntoFriendList)

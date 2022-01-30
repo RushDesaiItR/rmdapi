@@ -234,6 +234,7 @@ exports.getUserFriendlist = async (req, res)=>{
 
 
 exports.updateProfile=async(req, res)=>{
+    console.log("calle.")
     User.findOneAndUpdate({_id:req.params.id}, req.body, function (err, user) {
          if(user){
             res.status(200).send(user);
