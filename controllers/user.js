@@ -233,7 +233,15 @@ exports.getUserFriendlist = async (req, res)=>{
 }
 
 
-
+exports.updateProfile=async(req, res)=>{
+    User.findOneAndUpdate({_id:req.params.id}, req.body, function (err, user) {
+         if(user){
+            res.status(200).send(user);
+         }else{
+            res.status(500).send({error:err});
+         }
+      });
+}
 exports.createFriend = async(req, res)=>{
     const userCheck = await User.findOne({ _id: req.params.id })
     userCheck.pendinFriendlist.push(req.body._id)
