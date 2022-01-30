@@ -33,7 +33,15 @@ router.get("/getuserfriends/:id", userController.getUserFriendlist)
 //------------create user story
 router.post("/story/:id",userController.createStory)
 //----------------get all story
+
 router.get("/getallstory",userController.getAllStories)
+
+//-get pending friend request
+router.get("/getallpendingrequest/:id",userController.getPendingRequest)
+
+
+//-get sended friend request
+router.get("/getallsendedgrequest/:id",userController.getSendedRequest)
 // Auth user only
 
 
